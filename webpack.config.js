@@ -16,6 +16,7 @@ module.exports = (_, argv) => {
     },
     output: {
       path: path.resolve(__dirname, "./dist"),
+      publicPath: "/",
       filename: "index.js",
       clean: true,
     },
