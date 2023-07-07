@@ -1,0 +1,15 @@
+{
+  "presets": ["@babel/preset-env"],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "@Components": "./src/components",
+          "@Utils": "./src/utils",
+          "@Static": "./src/static"
+        }
+      }
+    ]
+  ]
+}

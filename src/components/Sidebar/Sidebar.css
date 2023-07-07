@@ -1,0 +1,39 @@
+.sidebar {
+  width: 200px;
+  background-color: #f5f5f5;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.sidebar-logo {
+  font-size: 1.2em;
+  cursor: pointer;
+  margin: 0;
+  padding: 1em 0 1em 0;
+  box-sizing: border-box;
+}
+
+.sidebar-logo:hover {
+  background-color: #e1e1e1;
+}
+
+.sidebar-add-btn {
+  margin-bottom: 20px;
+  width: 100%;
+  height: 2em;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: medium;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-add-btn:hover {
+  background-color: #e1e1e1;
+}
+
+.sidebar-add-btn > svg {
+  margin-right: 5px;
+}
