@@ -1,8 +1,9 @@
-import { once } from "@Utils/once";
-import { isConstructor, isDocumentState } from "@Utils/validation";
+import once from "@Utils/once";
+import { isConstructor, validateDocumentState } from "@Utils/validation";
 import "./Document.css";
 import { putDocument } from "@Utils/apis";
 import { patchSidebarState } from "@Utils/stateSetters";
+import { EVENT } from "@Utils/constants";
 
 export default function Document({ $target }) {
   if (!isConstructor(new.target)) {
@@ -20,7 +21,7 @@ export default function Document({ $target }) {
   };
 
   this.setState = (nextState) => {
-    if (!isDocumentState(this.state)) {
+    if (!validateDocumentState(this.state)) {
       return;
     }
 
@@ -50,37 +51,43 @@ export default function Document({ $target }) {
         });
 
         if (e.target.name === "title") {
-          window.dispatchEvent(
-            new CustomEvent("title-updated", {
-              detail: {
-                id: this.state.id,
-                title: e.target.value,
-              },
-            })
-          );
+          this.dispatchTitle(e.target.value);
         }
 
-        if (timer) {
-          clearTimeout(timer);
-        }
-        timer = setTimeout(
-          (function (state) {
-            return async () => {
-              const { id: documentId, title, content } = state;
-              await putDocument({
-                documentId,
-                title: title.length ? title : "제목없음",
-                content,
-              });
-
-              patchSidebarState();
-            };
-          })(this.state),
-          3000
-        );
+        this.autoSave();
       });
     });
   });
+
+  this.dispatchTitle = (title) => {
+    window.dispatchEvent(
+      new CustomEvent(EVENT.TITLE_UPDATED, {
+        detail: {
+          id: this.state.id,
+          title,
+        },
+      })
+    );
+  };
+
+  this.autoSave = () => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(
+      ((state) => async () => {
+        const { id: documentId, title, content } = state;
+        await putDocument({
+          documentId,
+          title: title.length ? title : "제목없음",
+          content,
+        });
+
+        patchSidebarState();
+      })(this.state),
+      3000
+    );
+  };
 
   this.render = () => {
     this.init();
