@@ -116,7 +116,7 @@ export default function DocumentListItem({ $target, $sibling, parent, level }) {
     const response = await deleteDocument({ documentId: this.state.id });
     if (response) {
       patchSidebarState();
-      window.removeEventListener(EVENT.ROUTE_DRAWER, this.activate);
+      window.removeEventListener(EVENT.ROUTE_DOCUMENT_LIST, this.activate);
       window.removeEventListener(EVENT.TITLE_UPDATED, this.updateTitle);
       $titleContainer.removeEventListener("click", this.handleClick);
 
@@ -169,7 +169,7 @@ export default function DocumentListItem({ $target, $sibling, parent, level }) {
 
     $titleContainer.addEventListener("click", this.handleClick);
 
-    window.addEventListener(EVENT.ROUTE_DRAWER, this.activate);
+    window.addEventListener(EVENT.ROUTE_DOCUMENT_LIST, this.activate);
     window.addEventListener(EVENT.TITLE_UPDATED, (e) => {
       const { id, title } = e.detail;
       if (id === this.state.id) this.updateTitle(title);

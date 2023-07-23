@@ -29,7 +29,7 @@ export default async function router({ $target }) {
     }
   }
 
-  window.dispatchEvent(new CustomEvent(EVENT.ROUTE_DRAWER));
+  window.dispatchEvent(new CustomEvent(EVENT.ROUTE_DOCUMENT_LIST));
 }
 
 function clearPageWhenTransition({ $target, curPageName }) {
@@ -44,7 +44,7 @@ export function routeToDocument(targetDocumentId) {
   const { pathname } = window.location;
   const [, , documentIdStr] = pathname.split("/");
   const documentId = parseInt(documentIdStr, 10);
-  console.log(documentId, targetDocumentId);
+
   if (documentId !== targetDocumentId) {
     window.history.pushState(null, null, `/documents/${targetDocumentId}`);
   }
