@@ -4,6 +4,7 @@ import "./Document.css";
 import { putDocument } from "@Utils/apis";
 import { patchSidebarState } from "@Utils/stateSetters";
 import { EVENT } from "@Utils/constants";
+import { routeToDocument } from "@Utils/router";
 
 export default function Document({ $target }) {
   if (!isConstructor(new.target)) {
@@ -42,6 +43,7 @@ export default function Document({ $target }) {
       <section class="document-content-section">
         <textarea name="content"></textarea>
       </section>
+      <nav class="document-child-list"></nav>
     `;
 
     $document.querySelectorAll("[name]").forEach(($textarea) => {
@@ -56,6 +58,14 @@ export default function Document({ $target }) {
 
         this.autoSave();
       });
+    });
+
+    $document.addEventListener("click", (e) => {
+      const link = e.target.closest("[data-id");
+      if (!link) return;
+
+      const { id } = link.dataset;
+      routeToDocument(parseInt(id, 10));
     });
   });
 
@@ -100,5 +110,15 @@ export default function Document({ $target }) {
 
     const $content = $document.querySelector("[name=content]");
     $content.value = this.state.content;
+
+    const $childList = $document.querySelector(".document-child-list");
+    $childList.innerHTML = `
+      ${this.state.documents
+        .map(
+          ({ id, title }) =>
+            `<a class="document-child" data-id=${id}>${title}</a>`
+        )
+        .join("")}
+    `;
   };
 }

@@ -1,5 +1,5 @@
 import { registerStateSetter } from "@Utils/stateSetters";
-import router, { routeToDocument } from "@Utils/router";
+import router from "@Utils/router";
 import { EVENT } from "@Utils/constants";
 import Document from "@Pages/Document/Document";
 import { isConstructor } from "@Utils/validation";
