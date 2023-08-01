@@ -25,16 +25,9 @@
   outline: none;
 }
 
-.section-content > textarea {
-  width: 550px;
-  height: 70vh;
-  font-size: 1.5em;
-  border: none;
-  resize: none;
-}
-
-.section-content > textarea:focus {
-  outline: none;
+.section-content {
+  display: flex;
+  flex-direction: column;
 }
 
 .list-children {

@@ -5,6 +5,7 @@ import { putDocument } from "@Utils/apis";
 import { patchSidebarState } from "@Utils/stateSetters";
 import { EVENT } from "@Utils/constants";
 import { routeToDocument } from "@Utils/router";
+import DocumentContent from "@Components/DocumentContent/DocumentContent";
 
 export default function Document({ $target }) {
   if (!isConstructor(new.target)) {
@@ -110,6 +111,9 @@ export default function Document({ $target }) {
 
     const $content = $document.querySelector("[name=content]");
     $content.value = this.state.content;
+
+    const $contentSection = $document.querySelector(".section-content");
+    const documentContent = new DocumentContent({ $target: $contentSection });
 
     const $childList = $document.querySelector(".list-children");
     $childList.innerHTML = `
