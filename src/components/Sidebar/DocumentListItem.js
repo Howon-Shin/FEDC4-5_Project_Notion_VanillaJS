@@ -12,16 +12,24 @@ import openIcon from "@Static/openIcon.svg";
 import plusIcon from "@Static/plusIcon.svg";
 import trashIcon from "@Static/trashIcon.svg";
 import DocumentList from "./DocumentList";
+import {
+  activate,
+  handleAppend,
+  handleClick,
+  handleOpen,
+  handleRemove,
+  updateTitle,
+} from "./DocumentListItem.handler";
 
 export default function DocumentListItem({ $target, $sibling, parent, level }) {
   if (!isConstructor(new.target)) {
     return;
   }
 
-  const $item = document.createElement("div");
-  const $titleContainer = document.createElement("div");
-  const $childrenDocumentList = new DocumentList({
-    $target: $item,
+  this.$item = document.createElement("div");
+  this.$titleContainer = document.createElement("div");
+  this.childrenDocumentList = new DocumentList({
+    $target: this.$item,
     parent: this,
     level: level + 1,
   });
@@ -49,114 +57,26 @@ export default function DocumentListItem({ $target, $sibling, parent, level }) {
     this.toggleOpen();
   };
 
-  this.toggleOpen = () => {
-    const $openBtn = $item.querySelector(".btn-open-list");
-    $openBtn.className = `btn-open-list${this.opened ? " opened" : ""}`;
-
-    $childrenDocumentList.root.style.display = this.opened ? "block" : "none";
-  };
+  this.toggleOpen = handleOpen.bind(this);
 
   // url로 문서 활성화 여부 검사 후 맞으면 본인 강조
-  this.activate = () => {
-    if (isActivated(this.state.id)) {
-      $titleContainer.className = "container-list-item activated";
+  this.activate = activate.bind(this);
 
-      let curParent = parent;
-      const docsInfo = [
-        {
-          id: this.state.id,
-          title: this.state.title,
-        },
-      ];
+  this.updateTitle = updateTitle.bind(this);
 
-      while (curParent) {
-        curParent.setOpened(true);
+  this.handleAppend = handleAppend.bind(this);
 
-        docsInfo.unshift({
-          id: curParent.state.id,
-          title: curParent.state.title,
-        });
+  this.handleRemove = handleRemove.bind(this);
 
-        curParent = curParent.parent;
-      }
-
-      setStateOf(CONSTRUCTOR_NAME.HEADER, docsInfo);
-
-      const { id, title } = this.state;
-      setStateOf(CONSTRUCTOR_NAME.DASHBOARD, { id, title });
-    } else {
-      $titleContainer.className = "container-list-item";
-    }
-  };
-
-  this.updateTitle = (title) => {
-    this.setState({
-      ...this.state,
-      title: title || "제목없음",
-    });
-  };
-
-  this.handleAppend = async () => {
-    const newDocument = await postDocument({
-      title: "제목없음",
-      parent: this.state.id,
-    });
-    if (newDocument) {
-      patchSidebarState();
-      this.setOpened(true);
-      routeToDocument(newDocument.id);
-    }
-  };
-
-  this.handleRemove = async () => {
-    this.disable = true;
-
-    const response = await deleteDocument({ documentId: this.state.id });
-    if (response) {
-      patchSidebarState();
-      window.removeEventListener(EVENT.ROUTE_DOCUMENT_LIST, this.activate);
-      window.removeEventListener(EVENT.TITLE_UPDATED, this.updateTitle);
-      $titleContainer.removeEventListener("click", this.handleClick);
-
-      setStateOf(CONSTRUCTOR_NAME.DASHBOARD, {
-        id: this.state.id,
-        toRemove: true,
-      });
-
-      if (isActivated(this.state.id)) {
-        routeToHome({ replace: true });
-      }
-    } else {
-      this.disable = true;
-    }
-  };
-
-  this.handleClick = async (e) => {
-    if (this.disable) return;
-
-    const $actionElement = e.target.closest("[data-action]");
-    if (!$actionElement) return;
-
-    const { action } = $actionElement.dataset;
-
-    if (action === ACTION.OPEN) {
-      this.setOpened(!this.opened);
-    } else if (action === ACTION.APPEND) {
-      this.handleAppend();
-    } else if (action === ACTION.REMOVE) {
-      this.handleRemove();
-    } else if (action === ACTION.ROUTE) {
-      routeToDocument(this.state.id);
-    }
-  };
+  this.handleClick = handleClick.bind(this);
 
   this.init = once(() => {
-    $target.insertBefore($item, $sibling);
-    $item.insertAdjacentElement("afterbegin", $titleContainer);
+    $target.insertBefore(this.$item, $sibling);
+    this.$item.insertAdjacentElement("afterbegin", this.$titleContainer);
 
-    $titleContainer.className = "container-list-item";
-    $titleContainer.style.paddingLeft = `${10 * level}px`;
-    $titleContainer.innerHTML = `
+    this.$titleContainer.className = "container-list-item";
+    this.$titleContainer.style.paddingLeft = `${10 * level}px`;
+    this.$titleContainer.innerHTML = `
       <button class="btn-open-list" data-action="open">${openIcon}</button>
       <p class="list-item-title" data-action="route">${this.state.title}</p>
       <div class="container-item-btns">
@@ -165,7 +85,7 @@ export default function DocumentListItem({ $target, $sibling, parent, level }) {
       </div>
     `;
 
-    $titleContainer.addEventListener("click", this.handleClick);
+    this.$titleContainer.addEventListener("click", this.handleClick);
 
     window.addEventListener(EVENT.ROUTE_DOCUMENT_LIST, this.activate);
     window.addEventListener(EVENT.TITLE_UPDATED, (e) => {
@@ -180,23 +100,11 @@ export default function DocumentListItem({ $target, $sibling, parent, level }) {
   this.render = () => {
     this.init();
 
-    const $title = $item.querySelector(".list-item-title");
+    const $title = this.$item.querySelector(".list-item-title");
     $title.textContent = this.state.title;
 
-    $childrenDocumentList.setState(this.state.documents);
+    this.childrenDocumentList.setState(this.state.documents);
 
     this.activate();
   };
-}
-
-function isActivated(id) {
-  const { pathname } = window.location;
-  if (pathname.indexOf("/documents/") !== 0) {
-    return false;
-  }
-
-  const [, , documentIdStr] = pathname.split("/");
-  const documentId = parseInt(documentIdStr, 10);
-
-  return documentId === id;
 }
