@@ -29,7 +29,6 @@ export default function DocumentList({ $target, parent, level }) {
 
   this.init = once(() => {
     $target.appendChild($documentList);
-    $documentList.className = "documentList-nav";
   });
 
   this.render = () => {

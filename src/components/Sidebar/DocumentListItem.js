@@ -50,10 +50,8 @@ export default function DocumentListItem({ $target, $sibling, parent, level }) {
   };
 
   this.toggleOpen = () => {
-    const $openBtn = $item.querySelector(".document-list-item-open-button");
-    $openBtn.className = `document-list-item-open-button${
-      this.opened ? " opened" : ""
-    }`;
+    const $openBtn = $item.querySelector(".btn-open-list");
+    $openBtn.className = `btn-open-list${this.opened ? " opened" : ""}`;
 
     $childrenDocumentList.root.style.display = this.opened ? "block" : "none";
   };
@@ -61,7 +59,7 @@ export default function DocumentListItem({ $target, $sibling, parent, level }) {
   // url로 문서 활성화 여부 검사 후 맞으면 본인 강조
   this.activate = () => {
     if (isActivated(this.state.id)) {
-      $titleContainer.className = "document-list-item-container activated";
+      $titleContainer.className = "container-list-item activated";
 
       let curParent = parent;
       const docsInfo = [
@@ -87,7 +85,7 @@ export default function DocumentListItem({ $target, $sibling, parent, level }) {
       const { id, title } = this.state;
       setStateOf(CONSTRUCTOR_NAME.DASHBOARD, { id, title });
     } else {
-      $titleContainer.className = "document-list-item-container";
+      $titleContainer.className = "container-list-item";
     }
   };
 
@@ -156,12 +154,12 @@ export default function DocumentListItem({ $target, $sibling, parent, level }) {
     $target.insertBefore($item, $sibling);
     $item.insertAdjacentElement("afterbegin", $titleContainer);
 
-    $titleContainer.className = "document-list-item-container";
+    $titleContainer.className = "container-list-item";
     $titleContainer.style.paddingLeft = `${10 * level}px`;
     $titleContainer.innerHTML = `
-      <button class="document-list-item-open-button" data-action="open">${openIcon}</button>
-      <p class="document-list-item-title" data-action="route">${this.state.title}</p>
-      <div class="document-list-item-btn-container">
+      <button class="btn-open-list" data-action="open">${openIcon}</button>
+      <p class="list-item-title" data-action="route">${this.state.title}</p>
+      <div class="container-item-btns">
         <button data-action="remove">${trashIcon}</button>
         <button data-action="append">${plusIcon}</button>
       </div>
@@ -182,7 +180,7 @@ export default function DocumentListItem({ $target, $sibling, parent, level }) {
   this.render = () => {
     this.init();
 
-    const $title = $item.querySelector(".document-list-item-title");
+    const $title = $item.querySelector(".list-item-title");
     $title.innerText = this.state.title;
 
     $childrenDocumentList.setState(this.state.documents);

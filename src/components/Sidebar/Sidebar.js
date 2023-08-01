@@ -39,7 +39,7 @@ export default function Sidebar({ $target }) {
 
     $addBtn.innerText = "새 페이지";
     $addBtn.insertAdjacentHTML("afterbegin", addIcon);
-    $addBtn.className = "sidebar-add-btn";
+    $addBtn.className = "btn-add-root";
 
     $homeLogo.className = "sidebar-logo";
     $homeLogo.innerText = "신호원의 Hotion";

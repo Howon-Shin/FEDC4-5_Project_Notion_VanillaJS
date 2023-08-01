@@ -37,13 +37,13 @@ export default function Document({ $target }) {
   this.init = once(() => {
     $document.className = "document-container";
     $document.innerHTML = `
-      <section class="document-title-section">
+      <section class="section-title">
         <textarea name="title" value="${this.state.title}"></textarea>
       </section>
-      <section class="document-content-section">
+      <section class="section-content">
         <textarea name="content"></textarea>
       </section>
-      <nav class="document-child-list"></nav>
+      <nav class="list-children"></nav>
     `;
 
     $document.querySelectorAll("[name]").forEach(($textarea) => {
@@ -111,7 +111,7 @@ export default function Document({ $target }) {
     const $content = $document.querySelector("[name=content]");
     $content.value = this.state.content;
 
-    const $childList = $document.querySelector(".document-child-list");
+    const $childList = $document.querySelector(".list-children");
     $childList.innerHTML = `
       ${this.state.documents
         .map(

@@ -48,8 +48,8 @@ export default function Dashboard({ $target }) {
 
   this.init = once(() => {
     $dashboard.className = "dashboard-container";
-    $recent.className = "dashboard-recent-container";
-    $frequent.className = "dashboard-frequent-container";
+    $recent.className = "recent-container";
+    $frequent.className = "frequent-container";
 
     $dashboard.appendChild($recent);
     $dashboard.appendChild($frequent);
@@ -70,7 +70,7 @@ export default function Dashboard({ $target }) {
     }
 
     $recent.innerHTML = `
-      <p class="dashboard-recent-title">⏰ 최근 사용한 문서</p>
+      <p class="recent-title">⏰ 최근 사용한 문서</p>
       ${Object.entries(this.state)
         .sort(
           ([aid, aval], [bid, bval]) => bval.lastUsedTime - aval.lastUsedTime
@@ -81,7 +81,7 @@ export default function Dashboard({ $target }) {
     `;
 
     $frequent.innerHTML = `
-      <p class="dashboard-frequent-title">🗂️ 자주 사용한 문서</p>
+      <p class="frequent-title">🗂️ 자주 사용한 문서</p>
       ${Object.entries(this.state)
         .sort(([aid, aval], [bid, bval]) => bval.usedCount - aval.usedCount)
         .slice(0, 10)

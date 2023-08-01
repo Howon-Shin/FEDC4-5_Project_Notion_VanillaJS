@@ -1,4 +1,4 @@
-.document-list-item-container {
+.container-list-item {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -6,19 +6,19 @@
   cursor: pointer;
 }
 
-.document-list-item-container.activated {
+.container-list-item.activated {
   background-color: #eaeaea;
 }
 
-.document-list-item-container:hover {
+.container-list-item:hover {
   background-color: #e1e1e1;
 }
 
-.document-list-item-container.activated:hover {
+.container-list-item.activated:hover {
   background-color: #cfcfcf;
 }
 
-.document-list-item-container button {
+.container-list-item button {
   border: none;
   background: none;
   cursor: pointer;
@@ -29,20 +29,20 @@
   align-items: center;
 }
 
-.document-list-item-container button:hover {
+.container-list-item button:hover {
   background-color: #bcbcbc;
 }
 
-.document-list-item-btn-container {
+.container-item-btns {
   display: flex;
   flex-direction: row;
 }
 
-.document-list-item-open-button.opened {
+.btn-open-list.opened {
   rotate: 90deg;
 }
 
-.document-list-item-title {
+.list-item-title {
   margin: 0;
   padding: 5px 0 5px 2px;
   flex: 1 1 0%;

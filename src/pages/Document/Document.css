@@ -9,11 +9,11 @@
   overflow-y: auto;
 }
 
-.document-title-section {
+.section-title {
   margin: 1em 0 1em 0;
 }
 
-.document-title-section > textarea {
+.section-title > textarea {
   width: 550px;
   height: 1.5em;
   font-size: 3em;
@@ -21,11 +21,11 @@
   resize: none;
 }
 
-.document-title-section > textarea:focus {
+.section-title > textarea:focus {
   outline: none;
 }
 
-.document-content-section > textarea {
+.section-content > textarea {
   width: 550px;
   height: 70vh;
   font-size: 1.5em;
@@ -33,11 +33,11 @@
   resize: none;
 }
 
-.document-content-section > textarea:focus {
+.section-content > textarea:focus {
   outline: none;
 }
 
-.document-child-list {
+.list-children {
   display: flex;
   flex-direction: column;
   width: 550px;

@@ -6,23 +6,23 @@
   align-items: center;
 }
 
-.dashboard-recent-container {
+.recent-container {
   width: 400px;
   margin-right: 1em;
   padding-bottom: 2em;
 }
 
-.dashboard-frequent-container {
+.frequent-container {
   width: 400px;
   margin-left: 1em;
   padding-bottom: 2em;
 }
 
-.dashboard-recent-title {
+.recent-title {
   font-size: x-large;
 }
 
-.dashboard-frequent-title {
+.frequent-title {
   font-size: x-large;
 }
 
