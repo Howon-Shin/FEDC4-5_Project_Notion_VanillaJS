@@ -181,7 +181,7 @@ export default function DocumentListItem({ $target, $sibling, parent, level }) {
     this.init();
 
     const $title = $item.querySelector(".list-item-title");
-    $title.innerText = this.state.title;
+    $title.textContent = this.state.title;
 
     $childrenDocumentList.setState(this.state.documents);
 

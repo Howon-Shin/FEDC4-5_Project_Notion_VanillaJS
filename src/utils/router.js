@@ -51,7 +51,7 @@ export function routeToDocument(targetDocumentId) {
   window.dispatchEvent(new CustomEvent(EVENT.ROUTE));
 }
 
-export function routeToHome({ replace = false } = {}) {
+export function routeToHome({ replace } = {}) {
   if (replace) {
     window.history.replaceState(null, null, "/");
   } else {
