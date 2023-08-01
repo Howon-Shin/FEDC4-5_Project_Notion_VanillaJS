@@ -1,23 +1,22 @@
-import { isConstructor, isDrawerState } from "@Utils/validation";
-import DrawerItem from "./DrawerItem";
-import { once } from "@Utils/once";
-import "./Drawer.css";
+import { isConstructor, validateDocumentListState } from "@Utils/validation";
+import once from "@Utils/once";
+import DocumentListItem from "./DocumentListItem";
 
-export default function Drawer({ $target, parent, level }) {
+export default function DocumentList({ $target, parent, level }) {
   if (!isConstructor(new.target)) {
     return;
   }
 
-  const $drawer = document.createElement("nav");
+  const $documentList = document.createElement("nav");
 
-  this.root = $drawer;
+  this.root = $documentList;
   this.children = [];
 
   this.state = [];
 
   this.renderingPlan = [];
   this.setState = (nextState) => {
-    if (!isDrawerState(nextState)) {
+    if (!validateDocumentListState(nextState)) {
       return;
     }
 
@@ -29,14 +28,13 @@ export default function Drawer({ $target, parent, level }) {
   };
 
   this.init = once(() => {
-    $target.appendChild($drawer);
-    $drawer.className = "drawer-nav";
+    $target.appendChild($documentList);
   });
 
   this.render = () => {
     this.init();
 
-    let $currentNode = $drawer.firstChild;
+    let $currentNode = $documentList.firstChild;
     let stateIdx = 0;
 
     this.renderingPlan.forEach((plan) => {
@@ -46,19 +44,19 @@ export default function Drawer({ $target, parent, level }) {
         $currentNode = $currentNode.nextSibling;
         stateIdx += 1;
       } else if (plan > 0) {
-        const $drawerItem = new DrawerItem({
-          $target: $drawer,
+        const $documentListItem = new DocumentListItem({
+          $target: $documentList,
           $sibling: $currentNode,
           parent,
           level,
         });
-        $drawerItem.setState(this.state[stateIdx]);
-        this.children.splice(stateIdx, 0, $drawerItem);
+        $documentListItem.setState(this.state[stateIdx]);
+        this.children.splice(stateIdx, 0, $documentListItem);
 
         stateIdx += 1;
       } else {
         const $tempNextNode = $currentNode?.nextSibling;
-        $drawer.removeChild($currentNode);
+        $documentList.removeChild($currentNode);
         $currentNode = $tempNextNode;
 
         this.children.splice(stateIdx, 1);
@@ -74,8 +72,8 @@ export default function Drawer({ $target, parent, level }) {
  */
 function setRenderingPlan(current, next, plan) {
   plan.splice(0);
-  let ci = 0,
-    ni = 0;
+  let ci = 0;
+  let ni = 0;
 
   while (ci < current.length || ni < next.length) {
     const cid = current[ci]?.id;

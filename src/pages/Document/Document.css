@@ -1,0 +1,54 @@
+.document-container {
+  padding: 15px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.section-title {
+  margin: 1em 0 1em 0;
+}
+
+.section-title > textarea {
+  width: 550px;
+  height: 1.5em;
+  font-size: 3em;
+  border: none;
+  resize: none;
+}
+
+.section-title > textarea:focus {
+  outline: none;
+}
+
+.section-content > textarea {
+  width: 550px;
+  height: 70vh;
+  font-size: 1.5em;
+  border: none;
+  resize: none;
+}
+
+.section-content > textarea:focus {
+  outline: none;
+}
+
+.list-children {
+  display: flex;
+  flex-direction: column;
+  width: 550px;
+}
+
+.document-child {
+  font-size: 1.2rem;
+  text-decoration: underline 1px solid rgb(196, 196, 196);
+  cursor: pointer;
+}
+
+.document-child:hover {
+  background-color: #e1e1e1;
+}

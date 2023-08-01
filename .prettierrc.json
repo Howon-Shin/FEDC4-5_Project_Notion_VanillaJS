@@ -7,5 +7,15 @@
   "bracketSpacing": true,
   "quoteProps": "as-needed",
   "arrowParens": "always",
-  "endOfLine": "lf"
+  "endOfLine": "lf",
+
+  "importOrder": [
+    "^@Components/(.*)$",
+    "^@Pages/(.*)$",
+    "^@Utils/(.*)$",
+    "^@Static/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

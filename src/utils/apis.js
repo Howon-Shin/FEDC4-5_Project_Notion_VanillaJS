@@ -1,20 +1,20 @@
-import { ERROR, RequestError } from "./Errors";
+import RequestError from "./Errors/RequestError";
+import { ERROR } from "./constants";
 
 const API_END_POINT = "https://kdt-frontend.programmers.co.kr";
 
 async function request(url, options = {}) {
-  if (url[0] !== "/") {
-    url = "/" + url;
-  }
-
   try {
-    const response = await fetch(`${API_END_POINT}${url}`, {
-      ...options,
-      headers: {
-        "Content-Type": "application/json",
-        "x-username": "howon",
-      },
-    });
+    const response = await fetch(
+      `${API_END_POINT}${url[0] !== "/" ? "/" : ""}${url}`,
+      {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          "x-username": "howon",
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new RequestError(ERROR.INVALID_REQUEST);
@@ -23,19 +23,20 @@ async function request(url, options = {}) {
     return response.json();
   } catch (err) {
     alert(err.message);
+    return null;
   }
 }
 
 export async function getRootDocuments() {
-  return await request("/documents");
+  return request("/documents");
 }
 
 export async function getDocument({ documentId }) {
-  return await request(`/documents/${documentId}`);
+  return request(`/documents/${documentId}`);
 }
 
 export async function postDocument({ title, parent }) {
-  return await request("/documents", {
+  return request("/documents", {
     method: "POST",
     body: JSON.stringify({
       title,
@@ -45,7 +46,7 @@ export async function postDocument({ title, parent }) {
 }
 
 export async function putDocument({ documentId, title, content }) {
-  return await request(`/documents/${documentId}`, {
+  return request(`/documents/${documentId}`, {
     method: "PUT",
     body: JSON.stringify({
       title,
@@ -55,7 +56,7 @@ export async function putDocument({ documentId, title, content }) {
 }
 
 export async function deleteDocument({ documentId }) {
-  return await request(`/documents/${documentId}`, {
+  return request(`/documents/${documentId}`, {
     method: "DELETE",
   });
 }

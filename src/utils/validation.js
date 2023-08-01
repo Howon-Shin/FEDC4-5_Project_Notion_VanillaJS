@@ -1,4 +1,6 @@
-import { ERROR, ValidationError } from "./Errors";
+/* eslint-disable valid-typeof */
+import ValidationError from "./Errors/ValidationError";
+import { ERROR } from "./constants";
 
 function checkError(condition, errorObj) {
   try {
@@ -6,7 +8,7 @@ function checkError(condition, errorObj) {
       throw errorObj;
     }
   } catch (err) {
-    console.error(err.name + ": " + err.message);
+    console.error(`${err.name}: ${err.message}`);
     return false;
   }
 
@@ -17,7 +19,7 @@ export function isConstructor(newTarget) {
   return checkError(!newTarget, new ValidationError(ERROR.NEW_MISSED));
 }
 
-export function isObjectState(state) {
+export function validateObjectState(state) {
   return checkError(
     state === null || !(typeof state === "object"),
     new TypeError(ERROR.NONE_OBJECT_STATE)
@@ -33,31 +35,30 @@ const documentType = {
   updatedAt: "string",
 };
 
-export function isDocumentState(state) {
+export function validateDocumentState(state) {
   return (
-    isObjectState(state) &&
+    validateObjectState(state) &&
     checkError(
-      (() => {
-        for (const [key, val] of Object.entries(state)) {
-          if (!documentType.hasOwnProperty(key)) return true;
-          if (key !== "content" && typeof val !== documentType[key])
-            return true;
-          if (
-            key === "content" &&
-            val !== null &&
-            typeof val !== documentType[key]
-          )
-            return true;
-          if (key === "documents" && !Array.isArray(val)) return true;
-        }
+      Object.entries(state).some(([key, val]) => {
+        if (!Object.prototype.hasOwnProperty.call(documentType, key))
+          return true;
+        if (key !== "content" && typeof val !== documentType[key]) return true;
+        if (
+          key === "content" &&
+          val !== null &&
+          typeof val !== documentType[key]
+        )
+          return true;
+        if (key === "documents" && !Array.isArray(val)) return true;
+
         return false;
-      })(),
+      }),
       new ValidationError(ERROR.INVALID_DOCUMENT_STATE)
     )
   );
 }
 
-export function isArrayState(state) {
+export function validateArrayState(state) {
   return checkError(
     !Array.isArray(state),
     new TypeError(ERROR.NONE_ARRAY_STATE)
@@ -70,84 +71,90 @@ const drawerItemType = {
   documents: "object",
 };
 
-export function isDrawerItemState(state) {
+export function validateDocumentListItemState(state) {
   return checkError(
-    (() => {
-      for (const [key, type] of Object.entries(drawerItemType)) {
-        if (!state.hasOwnProperty(key)) return true;
-        if (typeof state[key] !== type) return true;
-        if (key === "documents" && !Array.isArray(state[key])) return true;
-      }
+    Object.entries(drawerItemType).some(([key, type]) => {
+      if (!Object.prototype.hasOwnProperty.call(state, key)) return true;
+      if (typeof state[key] !== type) return true;
+      if (key === "documents" && !Array.isArray(state[key])) return true;
+
       return false;
-    })(),
-    new ValidationError(ERROR.INVALID_DRAWERITEM_STATE)
+    }),
+    new ValidationError(ERROR.INVALID_DOCUMENT_LIST_ITEM_STATE)
   );
 }
 
-export function isDrawerState(state) {
+export function validateDocumentListState(state) {
   return (
-    isArrayState(state) &&
+    validateArrayState(state) &&
     checkError(
-      !state.reduce((acc, cur) => acc && isDrawerItemState(cur), true),
-      new ValidationError(ERROR.INVALID_DRAWER_STATE)
+      !state.reduce(
+        (acc, cur) => acc && validateDocumentListItemState(cur),
+        true
+      ),
+      new ValidationError(ERROR.INVALID_DOCUMENT_LIST_STATE)
     )
   );
 }
 
-export function isHeaderState(state) {
+export function validateHeaderState(state) {
   return (
-    isArrayState(state) &&
+    validateArrayState(state) &&
     checkError(
-      (() => {
-        for (const item of state) {
-          if (!isObjectState(item)) return true;
-          if (!item.hasOwnProperty("id") || typeof item.id !== "number")
-            return true;
-          if (!item.hasOwnProperty("title") || typeof item.title !== "string")
-            return true;
-        }
+      state.some((item) => {
+        if (!validateObjectState(item)) return true;
+        if (
+          !Object.prototype.hasOwnProperty.call(item, "id") ||
+          typeof item.id !== "number"
+        )
+          return true;
+        if (
+          !Object.prototype.hasOwnProperty.call(item, "title") ||
+          typeof item.title !== "string"
+        )
+          return true;
+
         return false;
-      })(),
+      }),
       new ValidationError(ERROR.INVALID_HEADER_STATE)
     )
   );
 }
 
-export function isHomeState(state) {
+export function validateDashboardState(state) {
   return (
-    isObjectState(state) &&
+    validateObjectState(state) &&
     checkError(
-      (() => {
-        for (const [key, val] of Object.entries(state)) {
-          const numKey = parseInt(key);
-          if (isNaN(numKey) || key.length !== numKey.toString().length)
-            return true;
-          if (!isHomeItemState(val)) return true;
-        }
+      Object.entries(state).some(([key, val]) => {
+        const numKey = parseInt(key, 10);
+        if (Number.isNaN(numKey) || key.length !== numKey.toString().length)
+          return true;
+        if (!validateDashboardItemState(val)) return true;
+
         return false;
-      })(),
-      new ValidationError(ERROR.INVALID_HOME_STATE)
+      }),
+      new ValidationError(ERROR.INVALID_DASHBOARD_STATE)
     )
   );
 }
 
-const homeItemType = {
+const dashboardItemType = {
   title: "string",
-  numUsed: "number",
+  usedCount: "number",
   lastUsedTime: "number",
 };
 
-export function isHomeItemState(state) {
+export function validateDashboardItemState(state) {
   return (
-    isObjectState(state) &&
+    validateObjectState(state) &&
     checkError(
-      (() => {
-        for (const [name, type] of Object.entries(homeItemType)) {
-          if (!state.hasOwnProperty(name) || typeof state[name] !== type)
-            return true;
-        }
-      })(),
-      new ValidationError(ERROR.INVALID_HOME_STATE)
+      Object.entries(dashboardItemType).some(
+        ([name, type]) =>
+          !Object.prototype.hasOwnProperty.call(state, name) ||
+          typeof state[name] !== type
+      ),
+
+      new ValidationError(ERROR.INVALID_DASHBOARD_STATE)
     )
   );
 }

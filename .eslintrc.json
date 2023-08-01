@@ -11,6 +11,13 @@
   "plugins": ["import", "prettier"],
   "root": true,
   "rules": {
+    "no-alert": "off",
+    "no-console": "warn",
+    "no-new": "off",
+    "no-unused-vars": "warn",
+    "no-use-before-define": "warn",
+    "import/no-cycle": "off",
+    "import/no-unresolved": "off",
     "prettier/prettier": ["error"]
   }
 }

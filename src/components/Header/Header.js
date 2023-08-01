@@ -1,6 +1,6 @@
-import { isConstructor, isHeaderState } from "@Utils/validation";
+import { isConstructor, validateHeaderState } from "@Utils/validation";
 import "./Header.css";
-import { once } from "@Utils/once";
+import once from "@Utils/once";
 import { routeToDocument } from "@Utils/router";
 
 export default function Header({ $target }) {
@@ -9,11 +9,12 @@ export default function Header({ $target }) {
   }
 
   const $header = document.createElement("header");
+  const $headerNav = document.createElement("nav");
 
   this.state = [];
 
   this.setState = (nextState) => {
-    if (!isHeaderState(nextState)) {
+    if (!validateHeaderState(nextState)) {
       return;
     }
 
@@ -24,34 +25,32 @@ export default function Header({ $target }) {
 
   this.init = once(() => {
     $header.className = "header";
+    $headerNav.className = "header-nav";
+
+    $header.appendChild($headerNav);
     $target.appendChild($header);
 
     $header.addEventListener("click", (e) => {
       const $linkElement = e.target.closest("[data-id]");
       if (!$linkElement) return;
 
-      routeToDocument($linkElement.dataset.id);
+      const documentId = parseInt($linkElement.dataset.id, 10);
+
+      routeToDocument(documentId);
     });
   });
 
   this.render = () => {
     this.init();
-    $header.innerHTML = `
-      <nav class="header-nav">
-        ${this.state
-          .map(
-            ({ id, title }, idx) => `
+    $headerNav.innerHTML = `
+      ${this.state
+        .map(
+          ({ id, title }) => `
             <p class="header-title" data-id=${id}>${title}</p>
-            ${
-              idx < this.state.length - 1
-                ? "<p class=header-title-divider> / </p>"
-                : ""
-            }
-            `
-          )
-          .join("")}
-      </nav>
-    `;
+          `
+        )
+        .join("<p class=header-title-divider> / </p>")}
+      `;
   };
 
   this.render();
