@@ -27,48 +27,19 @@ export default function Document({ $target }) {
       return;
     }
 
+    const doesDocumentChanged =
+      nextState.id !== undefined && this.state.id !== nextState.id;
+    if (doesDocumentChanged) {
+      this.contentList = [];
+    }
+
     this.state = {
       ...this.state,
       ...nextState,
     };
 
-    this.render();
+    this.render(doesDocumentChanged);
   };
-
-  this.init = once(() => {
-    $document.className = "document-container";
-    $document.innerHTML = `
-      <section class="section-title">
-        <textarea name="title" value="${this.state.title}"></textarea>
-      </section>
-      <section class="section-content">
-        <textarea name="content"></textarea>
-      </section>
-      <nav class="list-children"></nav>
-    `;
-
-    $document.querySelectorAll("[name]").forEach(($textarea) => {
-      $textarea.addEventListener("input", (e) => {
-        this.setState({
-          [e.target.name]: e.target.value,
-        });
-
-        if (e.target.name === "title") {
-          this.dispatchTitle(e.target.value);
-        }
-
-        this.autoSave();
-      });
-    });
-
-    $document.addEventListener("click", (e) => {
-      const link = e.target.closest("[data-id");
-      if (!link) return;
-
-      const { id } = link.dataset;
-      routeToDocument(parseInt(id, 10));
-    });
-  });
 
   this.dispatchTitle = (title) => {
     window.dispatchEvent(
@@ -96,12 +67,94 @@ export default function Document({ $target }) {
 
         patchSidebarState();
       })(this.state),
-      3000
+      1500
     );
   };
 
-  this.render = () => {
+  this.toggleTemplateBtn = (toVisible) => {
+    const $template = $document.querySelector(".section-template");
+    if (toVisible) {
+      $template.style.display = "block";
+    } else {
+      $template.style.display = "none";
+    }
+  };
+
+  this.contentList = [];
+
+  this.modifyContentList = (curItem, itemToAdd) => {
+    const index = this.contentList.findIndex((content) => content === curItem);
+
+    if (index < 0) return;
+
+    if (itemToAdd) {
+      this.contentList.splice(index + 1, 0, itemToAdd);
+    } else {
+      this.contentList.splice(index, 1);
+    }
+
+    this.updateContent();
+  };
+
+  this.updateContent = () => {
+    const totalContent =
+      this.contentList.map((item) => item.state).join("<br>") ?? null;
+    this.setState({ content: totalContent });
+
+    this.autoSave();
+  };
+
+  this.init = once(() => {
+    $document.className = "document-container";
+    $document.innerHTML = `
+      <section class="section-title">
+        <textarea name="title" value="${this.state.title}"></textarea>
+      </section>
+      <section class="section-content"></section>
+      <section class="section-template">
+        <button class="btn-empty-page">빈 페이지</button>
+      </section>
+      <nav class="list-children"></nav>
+    `;
+
+    $document.querySelectorAll("[name]").forEach(($textarea) => {
+      $textarea.addEventListener("input", (e) => {
+        this.setState({
+          [e.target.name]: e.target.value,
+        });
+
+        if (e.target.name === "title") {
+          this.dispatchTitle(e.target.value);
+        }
+
+        this.autoSave();
+      });
+    });
+
+    $document.addEventListener("click", (e) => {
+      const link = e.target.closest("[data-id]");
+      if (!link) return;
+
+      const { id } = link.dataset;
+      routeToDocument(parseInt(id, 10));
+    });
+
+    $document.querySelector(".btn-empty-page").addEventListener("click", () => {
+      this.setState({ content: "" });
+      this.contentList = [
+        new DocumentContent({
+          $target: $document.querySelector(".section-content"),
+          content: "",
+          updateContent: this.updateContent,
+          modifyContentList: this.modifyContentList,
+        }),
+      ];
+    });
+  });
+
+  this.render = (doesDocumentChanged) => {
     this.init();
+
     if ($target.firstElementChild === null) {
       $target.appendChild($document);
     }
@@ -109,11 +162,31 @@ export default function Document({ $target }) {
     const $title = $document.querySelector("[name=title]");
     $title.value = this.state.title;
 
-    const $content = $document.querySelector("[name=content]");
-    $content.value = this.state.content;
-
     const $contentSection = $document.querySelector(".section-content");
-    const documentContent = new DocumentContent({ $target: $contentSection });
+
+    if (this.state.content === null) {
+      this.toggleTemplateBtn(true);
+    } else {
+      this.toggleTemplateBtn(false);
+    }
+
+    if (doesDocumentChanged) {
+      $contentSection.innerHTML = "";
+
+      if (this.state.content === null) return;
+
+      this.state.content.split("<br>").forEach((line) => {
+        this.contentList = [
+          ...this.contentList,
+          new DocumentContent({
+            $target: $contentSection,
+            content: line,
+            updateContent: this.updateContent,
+            modifyContentList: this.modifyContentList,
+          }),
+        ];
+      });
+    }
 
     const $childList = $document.querySelector(".list-children");
     $childList.innerHTML = `
