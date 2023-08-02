@@ -6,6 +6,8 @@ import { patchSidebarState } from "@Utils/stateSetters";
 import { EVENT } from "@Utils/constants";
 import { routeToDocument } from "@Utils/router";
 import DocumentContent from "@Components/DocumentContent/DocumentContent";
+import emptyPageIcon from "@Static/emptyPageIcon.svg";
+import enterIcon from "@Static/enterIcon.svg";
 
 export default function Document({ $target }) {
   if (!isConstructor(new.target)) {
@@ -113,7 +115,11 @@ export default function Document({ $target }) {
       </section>
       <section class="section-content"></section>
       <section class="section-template">
-        <button class="btn-empty-page">빈 페이지</button>
+        <button class="btn-empty-page">
+          ${emptyPageIcon}
+          빈 페이지
+          <div>${enterIcon}</div>
+        </button>
       </section>
       <nav class="list-children"></nav>
     `;
