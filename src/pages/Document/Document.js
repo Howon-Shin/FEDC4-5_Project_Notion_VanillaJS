@@ -6,6 +6,7 @@ import { patchSidebarState } from "@Utils/stateSetters";
 import { EVENT } from "@Utils/constants";
 import { routeToDocument } from "@Utils/router";
 import DocumentContent from "@Components/DocumentContent/DocumentContent";
+import pageIcon from "@Static/pageIcon.svg";
 import emptyPageIcon from "@Static/emptyPageIcon.svg";
 import enterIcon from "@Static/enterIcon.svg";
 
@@ -195,7 +196,10 @@ export default function Document({ $target }) {
       ${this.state.documents
         .map(
           ({ id, title }) =>
-            `<a class="document-child" data-id=${id}>${title}</a>`
+            `<a class="document-child" data-id=${id}>
+              ${pageIcon}
+              ${title}
+            </a>`
         )
         .join("")}
     `;
