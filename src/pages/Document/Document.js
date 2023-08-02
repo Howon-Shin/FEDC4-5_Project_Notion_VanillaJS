@@ -29,6 +29,7 @@ export default function Document({ $target }) {
 
     const doesDocumentChanged =
       nextState.id !== undefined && this.state.id !== nextState.id;
+
     if (doesDocumentChanged) {
       this.contentList = [];
     }
@@ -117,18 +118,13 @@ export default function Document({ $target }) {
       <nav class="list-children"></nav>
     `;
 
-    $document.querySelectorAll("[name]").forEach(($textarea) => {
-      $textarea.addEventListener("input", (e) => {
-        this.setState({
-          [e.target.name]: e.target.value,
-        });
-
-        if (e.target.name === "title") {
-          this.dispatchTitle(e.target.value);
-        }
-
-        this.autoSave();
+    $document.querySelector("[name=title]").addEventListener("input", (e) => {
+      this.setState({
+        [e.target.name]: e.target.value,
       });
+
+      this.dispatchTitle(e.target.value);
+      this.autoSave();
     });
 
     $document.addEventListener("click", (e) => {
@@ -173,19 +169,19 @@ export default function Document({ $target }) {
     if (doesDocumentChanged) {
       $contentSection.innerHTML = "";
 
-      if (this.state.content === null) return;
-
-      this.state.content.split("<br>").forEach((line) => {
-        this.contentList = [
-          ...this.contentList,
-          new DocumentContent({
-            $target: $contentSection,
-            content: line,
-            updateContent: this.updateContent,
-            modifyContentList: this.modifyContentList,
-          }),
-        ];
-      });
+      if (this.state.content !== null) {
+        this.state.content.split("<br>").forEach((line) => {
+          this.contentList = [
+            ...this.contentList,
+            new DocumentContent({
+              $target: $contentSection,
+              content: line,
+              updateContent: this.updateContent,
+              modifyContentList: this.modifyContentList,
+            }),
+          ];
+        });
+      }
     }
 
     const $childList = $document.querySelector(".list-children");
