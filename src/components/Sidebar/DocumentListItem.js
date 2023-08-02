@@ -4,10 +4,7 @@ import {
   validateDocumentListItemState,
 } from "@Utils/validation";
 import "./DocumentListItem.css";
-import { deleteDocument, postDocument } from "@Utils/apis";
-import { patchSidebarState, setStateOf } from "@Utils/stateSetters";
-import { routeToDocument, routeToHome } from "@Utils/router";
-import { ACTION, CONSTRUCTOR_NAME, EVENT } from "@Utils/constants";
+import { EVENT } from "@Utils/constants";
 import openIcon from "@Static/openIcon.svg";
 import plusIcon from "@Static/plusIcon.svg";
 import trashIcon from "@Static/trashIcon.svg";

@@ -1,0 +1,11 @@
+.document-content {
+  width: 550px;
+  font-size: 1rem;
+  border: 1px solid black;
+  resize: none;
+  padding: 0.2rem;
+}
+
+.document-content:focus {
+  outline: none;
+}

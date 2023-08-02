@@ -25,30 +25,59 @@
   outline: none;
 }
 
-.section-content > textarea {
-  width: 550px;
-  height: 70vh;
-  font-size: 1.5em;
-  border: none;
-  resize: none;
-}
-
-.section-content > textarea:focus {
-  outline: none;
+.section-content {
+  display: flex;
+  flex-direction: column;
 }
 
 .list-children {
   display: flex;
   flex-direction: column;
   width: 550px;
+  margin-top: 1rem;
 }
 
 .document-child {
-  font-size: 1.2rem;
+  display: flex;
+  font-size: 1rem;
   text-decoration: underline 1px solid rgb(196, 196, 196);
+  padding: 0.2rem;
+  border-radius: 0.2rem;
   cursor: pointer;
 }
 
 .document-child:hover {
   background-color: #e1e1e1;
+}
+
+.document-child > :first-child {
+  margin-right: 0.2rem;
+}
+
+.btn-empty-page {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 550px;
+  border: none;
+  border-radius: 0.2rem;
+  background-color: transparent;
+  font-size: 1rem;
+  padding: 0.2rem;
+  cursor: pointer;
+}
+
+.btn-empty-page:hover {
+  background-color: #eeeeee;
+  font-weight: bold;
+}
+
+.btn-empty-page > :last-child {
+  display: none;
+  position: absolute;
+  right: 0.2rem;
+}
+
+.btn-empty-page:hover > :last-child {
+  display: block;
 }

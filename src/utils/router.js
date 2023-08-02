@@ -23,6 +23,7 @@ export default async function router({ $target }) {
         $target,
         curPageName: CONSTRUCTOR_NAME.DOCUMENT,
       });
+
       setStateOf(CONSTRUCTOR_NAME.DOCUMENT, documentData);
     } else {
       routeToHome();
@@ -47,8 +48,8 @@ export function routeToDocument(targetDocumentId) {
 
   if (documentId !== targetDocumentId) {
     window.history.pushState(null, null, `/documents/${targetDocumentId}`);
+    window.dispatchEvent(new CustomEvent(EVENT.ROUTE));
   }
-  window.dispatchEvent(new CustomEvent(EVENT.ROUTE));
 }
 
 export function routeToHome({ replace } = {}) {
